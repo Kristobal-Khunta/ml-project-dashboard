@@ -1,48 +1,42 @@
 from sqlmodel import SQLModel, Field
 from datetime import datetime
 from typing import Optional
-from decimal import Decimal
 
 
-class ExperimentMetric(SQLModel, table=True):
-    """Model for storing machine learning experiment metrics."""
+class MetricRecord(SQLModel, table=True):
+    """
+    Simplified model for storing metric records.
 
-    __tablename__ = "experiment_metrics"  # type: ignore[assignment]
+    Contains only the core fields: project, model, dataset, metric, value, timestamp.
+    Designed to be minimal and extensible for future enhancements.
+    """
+
+    __tablename__ = "metric_records"  # type: ignore[assignment]
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    project_name: str = Field(max_length=100, description="Name of the ML project")
-    model_name: str = Field(max_length=100, description="Name of the machine learning model")
-    dataset_name: str = Field(max_length=100, description="Name of the dataset used")
-    metric_name: str = Field(max_length=50, description="Name of the metric (e.g., accuracy, loss, f1_score)")
-    metric_value: Decimal = Field(description="Numerical value of the metric")
-    timestamp: datetime = Field(default_factory=datetime.utcnow, description="When the metric was recorded")
-
-    # Optional fields for extensibility
-    notes: Optional[str] = Field(default=None, max_length=500, description="Additional notes about the experiment")
-    experiment_id: Optional[str] = Field(
-        default=None, max_length=100, description="External experiment ID for tracking"
-    )
+    project: str = Field(max_length=100, description="Project name")
+    model: str = Field(max_length=100, description="Model name")
+    dataset: str = Field(max_length=100, description="Dataset name")
+    metric: str = Field(max_length=50, description="Metric name")
+    value: float = Field(description="Metric value")
+    timestamp: datetime = Field(default_factory=datetime.utcnow, description="When the record was created")
 
 
-class ExperimentMetricCreate(SQLModel, table=False):
-    """Schema for creating new experiment metrics."""
+class MetricRecordCreate(SQLModel, table=False):
+    """Schema for creating new metric records."""
 
-    project_name: str = Field(max_length=100)
-    model_name: str = Field(max_length=100)
-    dataset_name: str = Field(max_length=100)
-    metric_name: str = Field(max_length=50)
-    metric_value: Decimal
-    notes: Optional[str] = Field(default=None, max_length=500)
-    experiment_id: Optional[str] = Field(default=None, max_length=100)
+    project: str = Field(max_length=100)
+    model: str = Field(max_length=100)
+    dataset: str = Field(max_length=100)
+    metric: str = Field(max_length=50)
+    value: float
 
 
-class ExperimentMetricUpdate(SQLModel, table=False):
-    """Schema for updating experiment metrics."""
+class MetricRecordUpdate(SQLModel, table=False):
+    """Schema for updating metric records."""
 
-    project_name: Optional[str] = Field(default=None, max_length=100)
-    model_name: Optional[str] = Field(default=None, max_length=100)
-    dataset_name: Optional[str] = Field(default=None, max_length=100)
-    metric_name: Optional[str] = Field(default=None, max_length=50)
-    metric_value: Optional[Decimal] = Field(default=None)
-    notes: Optional[str] = Field(default=None, max_length=500)
-    experiment_id: Optional[str] = Field(default=None, max_length=100)
+    project: Optional[str] = Field(default=None, max_length=100)
+    model: Optional[str] = Field(default=None, max_length=100)
+    dataset: Optional[str] = Field(default=None, max_length=100)
+    metric: Optional[str] = Field(default=None, max_length=50)
+    value: Optional[float] = Field(default=None)
